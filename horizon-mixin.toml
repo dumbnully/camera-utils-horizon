@@ -1,0 +1,259 @@
+[mod]
+id = "camerautils"
+version = "1.1.1"
+priority = 100
+
+[compatibility]
+horizon_revision = "67dad0d1a5adca139b426c8114e74a33b376ba64"
+
+[[module]]
+id = "core"
+file = "crates/horizon-client/src/game.rs"
+name = "camera_utils_core"
+source = "core.rs"
+visibility = "pub(crate)"
+
+[[module]]
+id = "camera_utils"
+file = "crates/horizon-client/src/game.rs"
+name = "camera_utils"
+source = "camera_utils.rs"
+visibility = "pub(crate)"
+
+[[injection]]
+id = "keys"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_key"
+helper = "keys.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "key", ty = "&str", value = "key" },
+  { name = "pressed", ty = "bool", value = "pressed" },
+]
+
+[[injection]]
+id = "ticks"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_tick"
+helper = "ticks.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+]
+
+[[injection]]
+id = "mods"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper = "mods.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "mods", ty = "&mut Vec<crate::mod_api::NativeMod>", value = "mods" },
+]
+
+[[injection]]
+id = "settings"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_settings"
+helper = "settings.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "mod_id", ty = "&str", value = "mod_id" },
+  { name = "buttons", ty = "&mut Vec<String>", value = "buttons" },
+]
+
+[[injection]]
+id = "settings_click"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_settings_click"
+helper = "settings_click.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "mod_id", ty = "&str", value = "mod_id" },
+  { name = "button", ty = "usize", value = "button" },
+]
+
+[[injection]]
+id = "wheel"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_wheel"
+helper = "wheel.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "steps", ty = "f32", value = "steps" },
+  { name = "claimed", ty = "&mut bool", value = "claimed" },
+]
+
+[[injection]]
+id = "fov"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_compute_fov_modifier"
+helper = "fov.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "base", ty = "f32", value = "base" },
+  { name = "modifier", ty = "&mut f32", value = "modifier" },
+]
+
+[[injection]]
+id = "distance"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_camera_distance"
+helper = "distance.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  {name="entity", ty="&horizon_client::camera::CameraEntity", value="entity"},
+  { name = "distance", ty = "&mut f32", value = "distance" },
+]
+
+[[injection]]
+id = "cycle"
+kind = "HEAD"
+target = "horizon_client::game::perspective::Game<'_>::cycle_camera"
+helper = "cycle.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+]
+
+[[injection]]
+id = "mouse"
+kind = "HEAD"
+target = "horizon_client::game::Game<'_>::apply_mouse_look"
+helper = "mouse.rs"
+cancellable = true
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+]
+
+[[injection]]
+id = "gui_layer"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_gui_layer_pre"
+helper = "gui_layer.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "layer", ty = "&str", value = "layer" },
+  { name = "canceled", ty = "&mut bool", value = "canceled" },
+]
+
+[[injection]]
+id = "hud"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_hud"
+helper = "hud.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "batch" },
+]
+
+[[injection]]
+id = "draw"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_render_post"
+helper = "draw.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "batch", ty = "&mut horizon_client::hud::HudBatch", value = "batch" },
+  { name = "screen", ty = "&crate::mod_api::NativeScreenView<'_>", value = "screen" },
+]
+
+[[injection]]
+id = "click"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_mouse_button_pressed_pre"
+helper = "click.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "screen", ty = "&crate::mod_api::NativeScreenView<'_>", value = "screen" },
+  { name = "button", ty = "i32", value = "button" },
+  { name = "canceled", ty = "&mut bool", value = "canceled" },
+]
+
+[[injection]]
+id = "drag"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_mouse_dragged_pre"
+helper = "drag.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "screen", ty = "&crate::mod_api::NativeScreenView<'_>", value = "screen" },
+  { name = "canceled", ty = "&mut bool", value = "canceled" },
+]
+
+[[injection]]
+id = "release"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_mouse_button_released_pre"
+helper = "release.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "canceled", ty = "&mut bool", value = "canceled" },
+]
+
+[[injection]]
+id = "screen_key"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_screen_key_pressed_pre"
+helper = "screen_key.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "key", ty = "&str", value = "key" },
+  { name = "canceled", ty = "&mut bool", value = "canceled" },
+]
+
+[[injection]]
+id = "command"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_command"
+helper = "command.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "command", ty = "&str", value = "command" },
+  { name = "ran", ty = "&mut bool", value = "ran" },
+]
+
+[[injection]]
+id = "commands"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_commands"
+helper = "commands.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "commands", ty = "&mut Vec<&'static str>", value = "commands" },
+]
+
+[[injection]]
+id = "camera"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::perspective::Game<'_>::camera_view"
+helper = "camera.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "self" },
+  { name = "partial", ty = "f32", value = "partial" },
+]
+
+[[injection]]
+id = "bob"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::fov::Game<'_>::bob_matrix"
+helper = "bob.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "partial", ty = "f32", value = "partial" },
+]
+
+[[injection]]
+id = "orientation"
+kind = "HEAD"
+cancellable = true
+target = "horizon_client::game::Game<'_>::camera_orientation"
+helper = "orientation.rs"
+bindings = [{name="game", ty="&crate::game::Game<'_>", value="self"}]
+
+[[module]]
+id = "localization"
+file = "crates/horizon-client/src/game.rs"
+name = "camera_utils_i18n"
+source = "localization.rs"
+visibility = "pub(crate)"
