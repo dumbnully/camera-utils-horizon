@@ -1,2 +1,3 @@
-# camera-utils-horizon
-Unofficial Camera Utils port for Horizon
+# Camera Utils (Horizon)
+
+Unofficial [Camera Utils](https://github.com/henkelmax/camera-utils) port for [Horizon](https://github.com/horizon-rust/horizon)
